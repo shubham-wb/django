@@ -11,6 +11,9 @@
         {% for room in rooms %}
         <div>
             <hr />
+            <a href ="{% url 'update-room' room.id %}">
+                Edit
+            </a> 
             <span>
                 @{{room.host.username}}
             </span>
