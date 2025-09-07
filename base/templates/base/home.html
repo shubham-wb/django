@@ -12,7 +12,7 @@
     <h3>Browse Topics</h3>
     <hr />
 
-     <div>
+    <div>
       <a href="{% url 'home' %}">All </a>
     </div>
 
@@ -24,13 +24,11 @@
   </div>
 
   <div>
-    <h5>
-        {{room_count}} rooms available
-    </h5>
+    <h5>{{room_count}} rooms available</h5>
     <a href="{% url 'create-room' %}">Create Room</a>
     <div>
       {% for room in rooms %}
-        <hr />
+      <hr />
       <div>
         {% if request.user == room.host %}
         <a href="{% url 'update-room' room.id %}"> Edit </a>
@@ -44,16 +42,6 @@
       </div>
       {% endfor %}
     </div>
-  </div>
-
-  {% if request.user.is_authenticated %}
-  <div class="comment-form">
-    <form method="POST"  action="">
-      {% csrf_token %}
-      <input type="text" name="body" placeholder="Write your message here..."/>
-    </form>
-  </div>
-  {% endif %}
   </div>
 </div>
 
