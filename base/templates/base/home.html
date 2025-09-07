@@ -30,10 +30,12 @@
     <a href="{% url 'create-room' %}">Create Room</a>
     <div>
       {% for room in rooms %}
-      <div>
         <hr />
+      <div>
+        {% if request.user == room.host %}
         <a href="{% url 'update-room' room.id %}"> Edit </a>
         <a href="{% url 'delete-room' room.id %}"> Delete </a>
+        {% endif %}
         <span> @{{room.host.username}} </span>
         <h5>
           {{room.id}} -- <a href="{%url 'room' room.id %}"> {{room.name}} </a>
@@ -42,6 +44,16 @@
       </div>
       {% endfor %}
     </div>
+  </div>
+
+  {% if request.user.is_authenticated %}
+  <div class="comment-form">
+    <form method="POST"  action="">
+      {% csrf_token %}
+      <input type="text" name="body" placeholder="Write your message here..."/>
+    </form>
+  </div>
+  {% endif %}
   </div>
 </div>
 
