@@ -20,6 +20,7 @@ rooms = [
 
 def loginPage(request):
     page = "login"
+    context = {"page": page}
     if request.user.is_authenticated:
         return redirect("home")
     if request.method == 'POST':
@@ -27,7 +28,7 @@ def loginPage(request):
         password = request.POST.get('password')
 
         try:
-            user = User.objects.get(username = username)
+            user = User.objects.get(username=username)
         except:
             messages.error(request, 'User does not exist')
 
@@ -38,12 +39,7 @@ def loginPage(request):
             return redirect('home')
         else:
             messages.error(request, "Username or password does not exist")
-        
-        context ={
-            "page": page
-        }
-        
-    return render(request, 'base/login_register.html',context)
+    return render(request, 'base/login_register.html', context)
 
 
 
@@ -84,7 +80,10 @@ def home(request):
     
     topics = Topic.objects.all()
     room_count = rooms.count()
-    context = {"rooms":rooms, "topics": topics,"room_count":room_count}
+    room_messages = Message.objects.all()
+    context = {"rooms":rooms, "topics": topics,"room_count":room_count,
+               "room_messages":room_messages
+               }
     
     return render(request,'base/home.html',context)
 
@@ -99,6 +98,7 @@ def room(request, pk):
             room = room, 
             body = request.POST.get('body')
         )
+        room.participants.add(request.user)
         return redirect('room', pk=room.id)
     
     context = {'room': room, 'room_messages':room_messages, 'participants':participants}
@@ -145,3 +145,19 @@ def deleteRoom(request, pk):
     return render(request, "base/delete.html", {
         "obj": room
     })
+
+@login_required(login_url="/login")
+def deleteMessage(request, pk):
+    message = Message.objects.get(id=pk)
+
+    if request.user != message.user:
+        return HttpResponse("You are not allowed here!!")
+
+    if request.method == "POST":
+        message.delete()
+        return redirect("home")
+    
+    return render(request, "base/delete.html", {
+        "obj": message
+    })
+
