@@ -1,11 +1,11 @@
 <header class="header header--loggedIn">
+  {% load static %}
   <div class="container">
-    {% load static %}
     <a href="{% url 'home' %}" class="header__logo">
       <img src="{% static 'images/logo.svg' %}" />
       <h1>StudyBuddy</h1>
     </a>
-    <form method="GET" class="header__search" action="{% url 'home' %}">
+    <form class="header__search" method="GET" action="{% url 'home' %}">
       <label>
         <svg
           version="1.1"
@@ -19,18 +19,16 @@
             d="M32 30.586l-10.845-10.845c1.771-2.092 2.845-4.791 2.845-7.741 0-6.617-5.383-12-12-12s-12 5.383-12 12c0 6.617 5.383 12 12 12 2.949 0 5.649-1.074 7.741-2.845l10.845 10.845 1.414-1.414zM12 22c-5.514 0-10-4.486-10-10s4.486-10 10-10c5.514 0 10 4.486 10 10s-4.486 10-10 10z"
           ></path>
         </svg>
-        <input type="text" name="q" placeholder="Search Rooms..." value="" />
+        <input name="q" placeholder="Search for posts" />
       </label>
     </form>
     <nav class="header__menu">
-      {% if request.user.is_authenticated %}
-
       <!-- Logged In -->
-
+      {% if request.user.is_authenticated %}
       <div class="header__user">
-        <a href="profile.html">
+        <a href="{% url 'update-user' %}">
           <div class="avatar avatar--medium active">
-            <img src="https://randomuser.me/api/portraits/men/37.jpg" />
+            <img src="{{request.user.avatar.url}}" />
           </div>
           <p>
             {{request.user.username}} <span>@{{request.user.username}}</span>
@@ -49,9 +47,17 @@
           </svg>
         </button>
       </div>
+      {% else %}
+
+      <!-- Not Logged In -->
+      <a href="{% url 'login' %}">
+        <img src="{% static 'images/avatar.svg' %}" />
+        <p>Login</p>
+      </a>
+      {% endif %}
 
       <div class="dropdown-menu">
-        <a href="settings.html" class="dropdown-link"
+        <a href="{% url 'update-user' %}" class="dropdown-link"
           ><svg
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
@@ -85,14 +91,13 @@
           Logout</a
         >
       </div>
-      {% else %}
-      <!-- Not Logged In -->
-      <a href="/login">
-        <img src="{% static 'images/avatar.svg' %}" />
-        <p>Login</p>
-      </a>
-
-      {% endif %}
     </nav>
   </div>
 </header>
+
+<!-- {% if request.user.is_authenticated %}
+<p>Hello {{request.user}}</p>
+<a href="{% url 'logout' %}">Logout</a>
+{% else %}
+<a href="{% url 'login' %}">Login</a>
+{% endif %} -->
